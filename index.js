@@ -19,38 +19,44 @@ class RebabelWebpackPlugin {
     compiler.plugin('after-compile', (compilation, cb) => {
       const { assets, chunks, additionalChunkAssets } = compilation;
 
+      // Find all asset files
       const files = chunks.reduce((arr, chunk) => (chunk.rendered ? arr.concat(chunk.files) : arr), []);
       files.push(...additionalChunkAssets);
 
       const transpiles = files
-        .filter((file) => !!assets[file])
+        // Only include .js files that exist in the asset collection
+        .filter((file) => !!assets[file] && /\.js($|\?)/i.test(file))
+        // Do async transform for each file, to avoid to many blocking calls
         .map((file) => new Promise((resolve, reject) => {
           try {
             const asset = assets[file];
             let source = {
               source: asset.source(),
-              map: null
+              map: babelConfig.sourceMaps ? asset.map() : null
             };
 
-            if(babelConfig.sourceMaps) {
-              source = asset.sourceAndMap
-                ? asset.sourceAndMap()
-                : { map: asset.map(), source: asset.source() };
+            // Use `sourceAndMap` if sourceMpas are needed
+            if(babelConfig.sourceMaps && asset.sourceAndMap) {
+              source = asset.sourceAndMap();
             }
 
+            const es5File = `${prefix}${file}`;
             let { code, map } = babel.transform(asset.source(), babelConfig);
 
-            const es5File = `${prefix}${file}`;
+            // Insert prefix into the async chunk call
             code = code.replace(/\b(script|\w).src\s*=\s*(__webpack_require__|\w).p\s*\+\s*["']/, `$&${prefix}`);
 
+            // Save transpiled code under the new file name
             assets[es5File] = map
               ? new SourceMapSource(code, file, map, source.source, source.map)
               : new RawSource(code);
 
+            // Resolve what ever
             resolve(es5File);
           } catch(err) { reject(err); }
         }));
 
+      // Run all transpiles
       Promise.all(transpiles)
         .then(() => cb())
         .catch((err) => {
