@@ -1,6 +1,6 @@
 {
   "name": "rebabel-webpack-plugin",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A webpack plugin that let you re-transpile asset JS files with babel and save to another file",
   "main": "index.es5.js",
   "jsnext:main": "index.js",
