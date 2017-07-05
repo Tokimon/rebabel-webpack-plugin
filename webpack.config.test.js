@@ -1,0 +1,21 @@
+const nPath = require('path');
+
+module.exports = (env) => {
+  return {
+    entry: './test/test.js',
+
+    output: {
+      path: nPath.resolve('test/out'),
+      filename: 'index.js?[chunkhash]',
+      libraryTarget: 'umd',
+      publicPath: 'test/out'
+    },
+
+    devtool: 'inline-source-map',
+
+    resolve: {
+      extensions: ['.js'],
+      modules: [ process.cwd(), nPath.resolve('node_modules') ]
+    }
+  };
+};

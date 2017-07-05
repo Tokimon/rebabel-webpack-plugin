@@ -2,26 +2,40 @@
   "name": "rebabel-webpack-plugin",
   "version": "0.1.1",
   "description": "A webpack plugin that let you re-transpile asset JS files with babel and save to another file",
-  "main": "index.es5.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://Tokimon@github.com/Tokimon/rebabel-webpack-plugins.git"
+  },
+  "keywords": [
+    "babel",
+    "webpack",
+    "plugin"
+  ],
+  "main": "cjs.js",
   "jsnext:main": "index.js",
   "module": "index.js",
   "scripts": {
-    "build": "webpack",
     "prepare": "npm run transpile",
-    "transpile": "babel index.js --out-file index.es5.js --no-babelrc --presets=es2015"
+    "transpile": "npm run transpile:es5 && npm run transpile:cjs",
+    "transpile:es5": "babel index.js --out-file es5.js --no-babelrc --presets=es2015",
+    "transpile:cjs": "babel index.js --out-file cjs.js --no-babelrc --plugins=transform-es2015-modules-commonjs",
+    "build": "webpack",
+    "build:test": "webpack --config webpack.config.test.js",
+    "test": "webpack && node test/test.js"
   },
-  "author": "",
+  "author": "Toke Voltelen",
   "license": "ISC",
-  "peerDependencies": {
-    "babel-core": "^6.25.0"
-  },
   "dependencies": {
+    "babel-core": "^6.25.0",
     "webpack-sources": "^1.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babili-webpack-plugin": "^0.1.2",
+    "co": "^4.6.0",
+    "kludjs": "^1.0.0",
     "webpack": "^3.0.0"
   }
 }
