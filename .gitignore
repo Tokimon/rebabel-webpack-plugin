@@ -40,5 +40,6 @@ jspm_packages
 .imdone
 
 # Custom
-public
-index.es5.js
+test/out
+es5.js
+cjs.js

@@ -1,6 +1,3 @@
-src
-public
 .imdone
-es5.html
-es6.html
+test
 webpack.config.js
