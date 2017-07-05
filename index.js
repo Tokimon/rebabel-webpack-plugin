@@ -1,5 +1,5 @@
-const babel = require('babel-core');
-const { SourceMapSource, RawSource } = require('webpack-sources');
+import { transform } from 'babel-core';
+import { SourceMapSource, RawSource } from 'webpack-sources';
 
 class RebabelWebpackPlugin {
   constructor({ babel: babelConfig = {}, prefix = 'es5-' } = {}) {
@@ -41,7 +41,7 @@ class RebabelWebpackPlugin {
             }
 
             const es5File = `${prefix}${file}`;
-            let { code, map } = babel.transform(asset.source(), babelConfig);
+            let { code, map } = transform(asset.source(), babelConfig);
 
             // Insert prefix into the async chunk call
             code = code.replace(/\b(script|\w).src\s*=\s*(__webpack_require__|\w).p\s*\+\s*["']/, `$&${prefix}`);
@@ -68,4 +68,5 @@ class RebabelWebpackPlugin {
   }
 }
 
-module.exports = RebabelWebpackPlugin;
+export { RebabelWebpackPlugin };
+export default RebabelWebpackPlugin;
