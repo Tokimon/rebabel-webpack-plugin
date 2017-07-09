@@ -1,4 +1,5 @@
 const nPath = require('path');
+const webpack = require('webpack');
 const { RebabelWebpackPlugin } = require('./cjs.js');
 const BabiliPlugin = require('babili-webpack-plugin');
 
@@ -17,7 +18,7 @@ module.exports = (env) => {
       publicPath: 'out/'
     },
 
-    devtool: 'inline-source-map',
+    devtool: false,
 
     plugins: [
       new BabiliPlugin({
@@ -28,10 +29,18 @@ module.exports = (env) => {
         booleans: true,
         numericLiterals: true
       }),
+      new webpack.optimize.CommonsChunkPlugin({
+        names: ['app', 'app2'],
+        filename: 'shared-[name].js?[chunkhash]',
+        minChunks: 2,
+        children: true,
+        async: false
+      }),
       new RebabelWebpackPlugin({
         babel: { presets: ['es2015'], minified: true }
       }),
       new RebabelWebpackPlugin({
+        prefix: 'es6-',
         babel: { plugins: ['transform-es2015-modules-commonjs'], minified: true }
       })
     ],

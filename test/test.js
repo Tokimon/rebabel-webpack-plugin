@@ -2,10 +2,10 @@
 
 const co = require('co');
 const test = require('kludjs');
-const app = require('./out/app.js');
-const app2 = require('./out/app2.js');
-const appES5 = require('./out/es5-app.js');
-const app2ES5 = require('./out/es5-app2.js');
+const app = require('./out/shared-app.js');
+const app2 = require('./out/shared-app2.js');
+const appES5 = require('./out/es5-shared-app.js');
+const app2ES5 = require('./out/es5-shared-app2.js');
 
 
 test('es6', (next) => {

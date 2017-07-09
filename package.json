@@ -20,13 +20,13 @@
     "transpile:es5": "babel index.js --out-file es5.js --no-babelrc --presets=es2015",
     "transpile:cjs": "babel index.js --out-file cjs.js --no-babelrc --plugins=transform-es2015-modules-commonjs",
     "build": "webpack",
-    "build:test": "webpack --config webpack.config.test.js",
-    "test": "webpack && node test/test.js"
+    "build:test": "webpack --config webpack.config.test.js"
   },
   "author": "Toke Voltelen",
   "license": "ISC",
   "dependencies": {
     "babel-core": "^6.25.0",
+    "babel-polyfill": "^6.23.0",
     "webpack-sources": "^1.0.1"
   },
   "devDependencies": {

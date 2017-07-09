@@ -2,7 +2,7 @@ const nPath = require('path');
 
 module.exports = (env) => {
   return {
-    entry: './test/test.js',
+    entry: ['babel-polyfill', './test/test.js'],
 
     output: {
       path: nPath.resolve('test/out'),
