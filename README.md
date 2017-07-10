@@ -18,13 +18,13 @@ One solution is to run two simultaneous builds with same entry files but
 with different Babel setups and you are good to go. This works fine but it increases your
 build time by a factor of 2 (or more) as you have to run the exact same build twice,
 which includes transforming asset paths, processing images, compiling css, etc. etc..
-All just to have the exact same JS code trageting different ES versions.
+All just to have the exact same JS code targeting different ES versions.
 
-This is why this Plugin is created. It takes the compiled code files and runs it through the babel
-transpiler one more time (hence the name) and make sure to save the new code to a new file and update
+This is why I created this Plugin. It takes the compiled code files and runs it through the babel
+transpiler one more time (hence the name), saves the new code to a new file and update
 the dynamic chunk reference to this new file.
 
-*Result:* Two version of the same code but with different ES targets.
+*Result:* Multiple versions of the same code but with different ES targets.
 
 ## Usage
 
@@ -46,6 +46,7 @@ Add the plugin to your list of plugins:
   // ... other settings ...
   plugins: [
     new RebabelPlugin({ /* options */  })
+    // ... Repeat for several versions - eg. ES 7 to ES 6 ...
   ]
 }
 
@@ -73,8 +74,20 @@ You only need to add the subsequent transpilation presets/plugins.
 
 - **babel**: [The babel setup](https://babeljs.io/docs/usage/api/#options) transferred directly to the `babel.transform` call.
 - **prefix**: The prefix to append to the each asset file name (default: `es5-`).
+- **createChunk**: Should the re-transpiled assets be exposed as chunks as well.
 
 ## Caveats
 
-As it is right now, you have to pass the `minified` to the `babel` options if you
-are minifying the files, as there are no reliable way to detect if the file is intentionally minified.
+- As it is right now, you have to pass the `minified` to the `babel` options if you
+are minifying the files, as I have found no reliable way to detect if the file is intentionally minified.
+
+- To expose the re-transpiled components to the `stats` (used by plugins like [webpack-bundle-analyzer](https://github.com/th0r/webpack-bundle-analyzer) or [assets-webpack-plugin](https://github.com/kossnocorp/assets-webpack-plugin)) the corresponding chunk needs to be created, which is enabled by `createChunk` option.
+
+## Known issues
+
+- If you want the re-transpiled assets to appear in [webpack-bundle-analyzer](https://github.com/th0r/webpack-bundle-analyzer)
+you need to set `createChunk = true`. However if you want to transpile to es5,
+unfortunately you cannot use the [babel-preset-es2015](https://babeljs.io/docs/plugins/preset-es2015/)
+as it includes [babel-plugin-transform-es2015-function-name](https://babeljs.io/docs/plugins/transform-es2015-function-name/)
+that messes up the parser in `webpack-bundle-analyzer`, because it renames anonymous functions created by webpack to `_()`.  
+The work around is to include all the transform plugins provided by the `babel-preset-es2015` except `transform-es2015-function-name`.
