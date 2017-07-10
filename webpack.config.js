@@ -2,6 +2,8 @@ const nPath = require('path');
 const webpack = require('webpack');
 const { RebabelWebpackPlugin } = require('./cjs.js');
 const BabiliPlugin = require('babili-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const AssetsPlugin = require('assets-webpack-plugin');
 
 module.exports = (env) => {
   return {
@@ -37,11 +39,47 @@ module.exports = (env) => {
         async: false
       }),
       new RebabelWebpackPlugin({
-        babel: { presets: ['es2015'], minified: true }
+        babel: {
+          // presets: [['es2015', { loose: true }]],
+          plugins: [
+            'check-es2015-constants',
+            'transform-es2015-arrow-functions',
+            'transform-es2015-block-scoped-functions',
+            'transform-es2015-block-scoping',
+            'transform-es2015-classes',
+            'transform-es2015-computed-properties',
+            'transform-es2015-destructuring',
+            'transform-es2015-duplicate-keys',
+            'transform-es2015-for-of',
+            // 'transform-es2015-function-name',
+            'transform-es2015-literals',
+            'transform-es2015-modules-commonjs',
+            'transform-es2015-object-super',
+            'transform-es2015-parameters',
+            'transform-es2015-shorthand-properties',
+            'transform-es2015-spread',
+            'transform-es2015-sticky-regex',
+            'transform-es2015-template-literals',
+            'transform-es2015-typeof-symbol',
+            'transform-es2015-unicode-regex',
+            'transform-regenerator'
+          ],
+          minified: false
+        },
+        resolveChunk: true
       }),
       new RebabelWebpackPlugin({
         prefix: 'es6-',
         babel: { plugins: ['transform-es2015-modules-commonjs'], minified: true }
+      }),
+      new BundleAnalyzerPlugin({
+        openAnalyzer: false,
+        analyzerMode: 'static'
+      }),
+      new AssetsPlugin({
+        filename: 'assets.json',
+        fullPath: true,
+        path: nPath.resolve('test/out')
       })
     ],
 

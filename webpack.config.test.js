@@ -6,7 +6,7 @@ module.exports = (env) => {
 
     output: {
       path: nPath.resolve('test/out'),
-      filename: 'index.js?[chunkhash]',
+      filename: 'test.js?[chunkhash]',
       libraryTarget: 'umd',
       publicPath: 'test/out'
     },
